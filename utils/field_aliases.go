@@ -48,6 +48,10 @@ var FieldTypeAliases = []FieldTypeAlias{
 	{"date", "types.DateTime", "types.DateTime", "basic"},
 	{"timestamp", "types.DateTime", "types.DateTime", "basic"},
 
+	// JSON types
+	{"json", "json.RawMessage", "json.RawMessage", "basic"},
+	{"jsonb", "json.RawMessage", "json.RawMessage", "basic"},
+
 	// Basic Go types
 	{"string", "string", "string", "basic"},
 	{"int", "int", "int", "basic"},
