@@ -17,7 +17,7 @@ var generateCmd = &cobra.Command{
 	Use:     "generate [name] [field:type...]",
 	Aliases: []string{"g"},
 	Short:   "Generate a new module",
-	Long:    `Generate a new module with the specified name and fields. Use --admin flag to generate admin interface.`,
+	Long:    `Generate a new module with the specified name and fields.`,
 	Args:    cobra.MinimumNArgs(1),
 	Run:     generateModule,
 }
