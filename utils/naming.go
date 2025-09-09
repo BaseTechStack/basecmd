@@ -119,6 +119,7 @@ type Field struct {
 	IsImage      bool
 	IsFile       bool
 	IsAttachment bool
+	IsMedia      bool
 }
 
 // ParseField creates a properly structured Field from a field definition string

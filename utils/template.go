@@ -40,6 +40,7 @@ type TemplateData struct {
 	HasManyToMany         bool
 	HasImages             bool
 	HasFiles              bool
+	HasMedia              bool
 	HasAttachments        bool
 	HasTimestamps         bool
 	HasSoftDelete         bool
@@ -124,9 +125,16 @@ func (td *TemplateData) updateComputedProperties(field Field) {
 		td.HasFiles = true
 		td.HasAttachments = true
 	}
+	if field.IsMedia {
+		td.HasMedia = true
+		td.HasAttachments = true
+	}
 	// Check for translatable fields
 	if field.Type == "translation.Field" {
 		td.HasTranslatableFields = true
+	}
+	if field.Type == "media.Media" {
+		td.HasMedia = true
 	}
 	if field.Type == "time.Time" {
 		switch field.Name {
@@ -157,6 +165,8 @@ func (td *TemplateData) addStandardImports() {
 			imports["base/core/storage"] = true
 		case "translation.Field":
 			imports["base/core/translation"] = true
+		case "media.Media":
+			imports["base/core/media"] = true
 		}
 	}
 
