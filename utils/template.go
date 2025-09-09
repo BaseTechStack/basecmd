@@ -187,6 +187,21 @@ func HasFieldType(fields []Field, fieldType string) bool {
 	return false
 }
 
+// HasImageField checks if any field has image type
+func HasImageField(fields []Field) bool {
+	return HasFieldType(fields, "*storage.Attachment")
+}
+
+// HasMediaField checks if any field has media type
+func HasMediaField(fields []Field) bool {
+	for _, field := range fields {
+		if field.Type == "media.Media" {
+			return true
+		}
+	}
+	return false
+}
+
 // Singularize converts plural to singular (basic implementation)
 func Singularize(word string) string {
 	if strings.HasSuffix(word, "ies") {
@@ -277,6 +292,9 @@ func parseFieldDef(fieldDef string) Field {
 		// Handle special categories
 		switch resolved.Category {
 		case "storage":
+			field.JSONName = ToSnakeCase(fieldName) + ",omitempty"
+			field.GORMTag = `gorm:"foreignKey:ModelId;references:Id"`
+		case "media":
 			field.JSONName = ToSnakeCase(fieldName) + ",omitempty"
 			field.GORMTag = `gorm:"foreignKey:ModelId;references:Id"`
 		case "translation":
@@ -377,6 +395,7 @@ func GenerateFileFromTemplate(dir, filename, templateName string, naming *Naming
 		*NamingConvention
 		Fields                []Field
 		HasImageField         bool
+		HasMediaField         bool
 		HasTranslatableFields bool
 		HasSoftDelete         bool
 		HasTimestamps         bool
@@ -390,6 +409,7 @@ func GenerateFileFromTemplate(dir, filename, templateName string, naming *Naming
 		NamingConvention:      naming,
 		Fields:                fields,
 		HasImageField:         HasImageField(fields),
+		HasMediaField:         HasMediaField(fields),
 		HasTranslatableFields: HasFieldType(fields, "translation.Field"),
 		HasSoftDelete:         HasFieldType(fields, "gorm.DeletedAt"),
 		HasTimestamps:         HasFieldType(fields, "time.Time"),
@@ -407,9 +427,4 @@ func GenerateFileFromTemplate(dir, filename, templateName string, naming *Naming
 	}
 
 	fmt.Printf("Generated %s\n", outputFile)
-}
-
-// HasImageField checks if any field has image type
-func HasImageField(fields []Field) bool {
-	return HasFieldType(fields, "*storage.Attachment")
 }
