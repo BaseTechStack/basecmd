@@ -144,9 +144,15 @@ func (s *{{.Model}}Service) Update(id uint, req *models.Update{{.Model}}Request)
     // {{.Name}} attachment is handled via separate endpoint
     {{- else if eq .Relationship "belongs_to" }}
     // For foreign key relationships
+    {{- if hasSuffix .Name "Id" }}
     if req.{{.Name}} != 0 {
         item.{{.Name}} = req.{{.Name}}
     }
+    {{- else }}
+    if req.{{.Name}}Id != 0 {
+        item.{{.Name}}Id = req.{{.Name}}Id
+    }
+    {{- end }}
     {{- else if not .IsRelation}}
     {{- if or (eq .Type "*bool") (eq .Type "bool")}}
     // For boolean fields, check if it's included in the request (pointer would be non-nil)
