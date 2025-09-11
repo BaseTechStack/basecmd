@@ -40,7 +40,11 @@ type {{.Model}} struct {
     {{- range .Fields}}
     {{- if eq .Relationship "belongs_to" }}
     {{- $objectName := TrimIdSuffix .Name }}
+    {{- if hasSuffix .Name "Id" }}
     {{$objectName}} *{{.RelatedModel}} `json:"{{ToSnakeCase $objectName}},omitempty" gorm:"foreignKey:{{.Name}}"`
+    {{- else }}
+    {{$objectName}} *{{.RelatedModel}} `json:"{{ToSnakeCase $objectName}},omitempty" gorm:"foreignKey:{{.Name}}Id"`
+    {{- end }}
     {{- else if eq .Relationship "has_many"}}
     {{.Name}} []*{{.RelatedModel}} `json:"{{.JSONName}},omitempty"`
     {{- else if eq .Relationship "has_one" }}
