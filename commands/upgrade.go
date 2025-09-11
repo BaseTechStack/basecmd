@@ -175,12 +175,15 @@ var upgradeCmd = &cobra.Command{
 
 By default, this command only upgrades within the same major version (e.g., 1.x → 1.y).
 To upgrade to a new major version (which may contain breaking changes), use the --major flag.
+To force reinstall the same version (useful for template updates), use the --force flag.
 
 Examples:
   base upgrade           # Upgrade within current major version only
-  base upgrade --major   # Allow upgrade to new major version`,
+  base upgrade --major   # Allow upgrade to new major version
+  base upgrade --force   # Force reinstall current version`,
 	Run: func(cmd *cobra.Command, args []string) {
 		allowMajor, _ := cmd.Flags().GetBool("major")
+		force, _ := cmd.Flags().GetBool("force")
 		fmt.Println("Checking for updates...")
 
 		// Get the appropriate latest version based on the --major flag
@@ -192,9 +195,13 @@ Examples:
 
 		info := version.GetBuildInfo()
 
-		if info.Version == targetVersion {
+		if info.Version == targetVersion && !force {
 			fmt.Printf("You're already using the latest version (%s)\n", info.Version)
 			return
+		}
+
+		if force && info.Version == targetVersion {
+			fmt.Printf("Force reinstalling version %s...\n", info.Version)
 		}
 
 		// Check if there's a major version available but user didn't specify --major
@@ -430,5 +437,6 @@ func getTargetVersion(allowMajor bool) (*version.Release, string, error) {
 
 func init() {
 	upgradeCmd.Flags().Bool("major", false, "Allow upgrade to new major version (may contain breaking changes)")
+	upgradeCmd.Flags().Bool("force", false, "Force reinstall the same version (useful for template updates)")
 	rootCmd.AddCommand(upgradeCmd)
 }
