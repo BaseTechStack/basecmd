@@ -57,6 +57,7 @@ var FieldTypeAliases = []FieldTypeAlias{
 	{"int", "int", "int", "basic"},
 	{"uint", "uint", "uint", "basic"},
 	{"bool", "bool", "bool", "basic"},
+	{"boolean", "bool", "bool", "basic"},
 	{"float", "float64", "float64", "basic"},
 	{"float64", "float64", "float64", "basic"},
 	{"time.Time", "time.Time", "time.Time", "basic"},

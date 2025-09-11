@@ -190,7 +190,12 @@ type {{.Model}}Response struct {
     {{- /* Include relationship objects in response */}}
     {{- range .Fields}}
     {{- if eq .Relationship "belongs_to" }}
-    {{.Name}} *{{.RelatedModel}}ModelResponse `json:"{{.JSONName}},omitempty"`
+    {{- if hasSuffix .Name "Id" }}
+    {{- $objectName := TrimIdSuffix .Name }}
+    {{$objectName}} *{{.RelatedModel}}ModelResponse `json:"{{ToSnakeCase $objectName}},omitempty"`
+    {{- else }}
+    {{.RelatedModel}} *{{.RelatedModel}}ModelResponse `json:"{{ToSnakeCase .RelatedModel}},omitempty"`
+    {{- end }}
     {{- else if or (eq .Relationship "has_many") (eq .Relationship "has_one") }}
     {{- if eq .Type "*storage.Attachment" }}
     {{.Name}} *storage.Attachment `json:"{{.JSONName}},omitempty"`
@@ -291,11 +296,11 @@ func (m *{{.Model}}) ToResponse() *{{.Model}}Response {
     {{- if hasSuffix .Name "Id" }}
     {{- $objectName := TrimIdSuffix .Name }}
     if m.{{.Name}} != 0 {
-        response.{{.Name}} = m.{{$objectName}}.ToModelResponse()
+        response.{{$objectName}} = m.{{$objectName}}.ToModelResponse()
     }
     {{- else }}
     if m.{{.Name}}Id != 0 {
-        response.{{.Name}}Id = m.{{.Name}}.ToModelResponse()
+        response.{{.RelatedModel}} = m.{{.Name}}.ToModelResponse()
     }
     {{- end }}
     {{- end}}
