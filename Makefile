@@ -53,10 +53,10 @@ build-all: clean
 	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o dist/base_windows_amd64.exe
 
 # LDFLAGS for version information
-LDFLAGS=-ldflags "-X main.Version=${VERSION} \
-                  -X main.CommitHash=${COMMIT_HASH} \
-                  -X main.BuildDate=${BUILD_DATE} \
-                  -X main.GoVersion=${GO_VERSION}"
+LDFLAGS=-ldflags "-X github.com/base-go/cmd/version.Version=${VERSION} \
+                  -X github.com/base-go/cmd/version.CommitHash=${COMMIT_HASH} \
+                  -X github.com/base-go/cmd/version.BuildDate=${BUILD_DATE} \
+                  -X github.com/base-go/cmd/version.GoVersion=${GO_VERSION}"
 
 .PHONY: all build clean install test dev
 
